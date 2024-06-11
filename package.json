@@ -1,0 +1,21 @@
+{
+  "name": "aqualityguy_data_scrapped_process",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:backend": "cd form-ask-chatgpt/backend/src && node server.js",
+    "start:frontend": "cd form-ask-chatgpt/frontend && npm start",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "concurrently": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

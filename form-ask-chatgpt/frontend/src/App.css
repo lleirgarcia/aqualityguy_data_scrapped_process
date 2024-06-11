@@ -1,0 +1,83 @@
+/* src/App.css */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0; 
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: #000000;
+}
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.ChatForm {
+  padding: 40px; /* Asegúrate de que este padding no está empujando los elementos internos */
+  max-width: 800px; /* O ajusta según lo necesites */
+  width: 90%; /* Usa un porcentaje del ancho para que sea responsive */
+  margin: auto; /* Centra el formulario en la página */
+  text-align: center;
+}
+.ChatForm textarea {  /* Aplica los mismos estilos al textarea */
+  width: calc(100% - 30px); /* Ajusta el ancho para acomodar el padding */
+  padding: 15px; /* Padding cómodo para la entrada de texto */
+  margin-top: 8px;
+  border: 2px solid #aaa; /* Borde visible pero no intrusivo */
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2); /* Ligeramente transparente para un look moderno */
+  color: white; /* Texto blanco para contraste */
+  font-size: 16px; /* Tamaño de fuente adecuado */
+  box-sizing: border-box; /* Asegura que padding y border están incluidos en el ancho */
+  resize: none; /* Opcional: evita que el usuario redimensione el textarea */
+}
+.ChatForm button {
+  width: 50%;
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #5a4e7c; /* Botón lila oscuro */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.ChatForm button:hover {
+  background-color: #453764; /* Un lila más oscuro para el hover */
+}
+
+.pre {
+  background-color: #000000;
+  color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  margin-top: 20px;
+  text-align: left;
+  overflow: auto;
+}
+/* src/App.css */
+/* src/App.css */
+
+.Response {
+  width: 100%; /* Utiliza el 100% del ancho de la pantalla */
+  max-width: 1200px; /* Establece un ancho máximo */
+  margin-left: auto; /* Centra horizontalmente */
+  margin-right: auto;
+  background-color: #000000; /* Fondo negro */
+  color: #fff; /* Texto blanco */
+  padding: 20px;
+  border-radius: 0;
+  margin-top: 20px;
+  text-align: left;
+  overflow: auto;
+  min-height: 50px; /* Altura mínima inicial */
+  white-space: pre-wrap; /* Respeta los espacios y saltos de línea */
+  word-wrap: break-word; /* Asegura que las palabras largas no desborden */
+}
