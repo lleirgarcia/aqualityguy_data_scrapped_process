@@ -1,14 +1,14 @@
-// src/ChatForm.js
+// src/ChatForm.tsx
 
-import React, { useState } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import axios from 'axios';
 import './App.css';
 
-function ChatForm() {
-    const [question, setQuestion] = useState('');
-    const [response, setResponse] = useState('');
+const ChatForm: React.FC = () => {
+    const [question, setQuestion] = useState<string>('');
+    const [response, setResponse] = useState<string>('');
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
             const res = await axios.post('http://localhost:3001/ask', { question });
@@ -19,6 +19,10 @@ function ChatForm() {
         }
     };
 
+    const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        setQuestion(event.target.value);
+    };
+
     return (
         <div>
             <div className="ChatForm">
@@ -27,7 +31,7 @@ function ChatForm() {
                     <textarea
                         placeholder="Escribe tu pregunta aquí..."
                         value={question}
-                        onChange={e => setQuestion(e.target.value)}
+                        onChange={handleInputChange}
                         required
                     />
                     <button type="submit">Hacer pregunta</button>
