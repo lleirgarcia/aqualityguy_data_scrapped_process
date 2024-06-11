@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:backend": "cd form-ask-chatgpt/backend/src && node server.js",
+    "build:backend": "cd form-ask-chatgpt/backend/ && tsc",
+    "start:backend": "cd form-ask-chatgpt/backend/ && node dist/server.js",
     "start:frontend": "cd form-ask-chatgpt/frontend && npm start",
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
   },
