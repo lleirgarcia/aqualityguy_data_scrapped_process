@@ -7,7 +7,13 @@
         "strict": true,
         "esModuleInterop": true,
         "moduleResolution":"node",
+        "baseUrl": "./src",
+        "paths": {
+          "*": ["*"]
+        },
+        "resolveJsonModule": true,
         "skipLibCheck": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "postbuild.js"],
+    "exclude": ["node_modules", "dist"]
 }
