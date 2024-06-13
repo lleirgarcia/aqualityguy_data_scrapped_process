@@ -4,7 +4,6 @@ import path from "path";
 const addJsExtension = (dir) => {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
-    console.log("\nfile: " + fullPath);
     if (fs.lstatSync(fullPath).isDirectory()) {
       addJsExtension(fullPath);
     } else if (path.extname(fullPath) === ".js") {
@@ -13,10 +12,19 @@ const addJsExtension = (dir) => {
         /(from\s+['"])(\.\/[^'"]+)(['"])/g,
         (match, p1, p2, p3) => {
           const importPath = path.resolve(path.dirname(fullPath), p2);
-          const importExt = path.extname(importPath);
-          return importExt === "" ? `${p1}${p2}.js${p3}` : match;
+          // Check if the resolved import path exists with a .js extension
+          if (!fs.existsSync(`${importPath}.js`)) {
+            return match;
+          }
+          return `${p1}${p2}.js${p3}`;
         }
       );
+
+      // Log changes for debugging purposes
+      if (content.includes('.js')) {
+        console.log(`Updated imports in file: ${fullPath}`);
+      }
+
       fs.writeFileSync(fullPath, content, "utf8");
     }
   });
