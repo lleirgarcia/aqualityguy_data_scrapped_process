@@ -51,6 +51,8 @@ export class OpenAIService {
             const item = file.Body; 
             const itemString = JSON.stringify(item, null, 2);
             const videoId = this.extractVideoId(item.url);
+            console.log(`Video: ${videoId}`)
+            console.log(INDEX_TEMPORAL)
 
             if (!videoId) {
                 console.error("Invalid URL format:", item.url);
@@ -80,8 +82,6 @@ export class OpenAIService {
                 });
 
                 const result = response.choices[0].message?.content || 'No response';
-                console.log("Generated text:", result);
-
                 const name = this.compactString(question);
                 const fileName = `${name}-${Date.now()}.txt`;
                 const filePath = path.join(folderPath, fileName);
@@ -98,7 +98,8 @@ export class OpenAIService {
                 console.error("Error during API call:", error);
                 throw new Error('Failed to get response from OpenAI');
             }
-            if (INDEX_TEMPORAL == 0) break;
+            INDEX_TEMPORAL++;
+            if (INDEX_TEMPORAL == 5) break;
         }
 
         return responses;
@@ -126,11 +127,12 @@ export class OpenAIService {
         if (compacted.length > 20) {
             compacted = compacted.substring(0, 20);
         }
-    
+        console.log(`Compact string: ${compacted}`)
         return compacted;
     }
 
     private async createHistoryFile(folderPath: string, fileName: string, question: string): Promise<void> {
+        console.log("Creating history file...")
         const historyFilePath = path.join(folderPath, 'history.txt');
         const currentDate = new Date().toLocaleString();
         const historyContent = `File name: ${fileName} -- Current date: ${currentDate} -- Question: ${question}\n`;
@@ -146,6 +148,7 @@ export class OpenAIService {
     }
 
     private async createVideoDataFile(folderPath: string, item: any): Promise<void> {
+        console.log("Creating video data file (likes, comments, etc)...")
         const videoDataFilePath = path.join(folderPath, 'videoData.txt');
         const videoDataContent = `Video Description: ${item.videoDesc}\nVideo Views: ${item.videoViews}\nURL: ${item.url}\nTotal Likes: ${item.totalLikes}\nTotal Comments: ${item.totalComments}\n`;
 
