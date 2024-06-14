@@ -51,8 +51,6 @@ export class OpenAIService {
             const item = file.Body; 
             const itemString = JSON.stringify(item, null, 2);
             const videoId = this.extractVideoId(item.url);
-            console.log(`Video: ${videoId}`)
-            console.log(INDEX_TEMPORAL)
 
             if (!videoId) {
                 console.error("Invalid URL format:", item.url);
