@@ -79,27 +79,27 @@ export const uploadFolderToS3 = async (folderPath: string, baseKey: string) => {
             const fileContent = await readFileAsync(filePath);
             const key = path.posix.join(baseKey, file);  // Utiliza path.posix.join para asegurarte de que las barras sean correctas en S3
 
-            // Verifica si la carpeta ya existe en S3
-            const folderExistsParams = {
+            // Verifica si el archivo ya existe en S3
+            const headParams = {
                 Bucket: process.env.S3_BUCKET_NAME!,
-                Prefix: baseKey
+                Key: key
             };
 
-            const existingObjects = await s3.listObjectsV2(folderExistsParams).promise();
-            const folderExists = existingObjects.Contents?.some(obj => obj.Key?.startsWith(baseKey));
-
-            if (!folderExists) {
-                console.log(`Creating folder ${baseKey} in S3.`);
+            try {
+                await s3.headObject(headParams).promise();
+                console.log(`File ${key} already exists. Skipping upload.`);
+                return; // Skip the upload if the file already exists
+            } catch (headErr) {
+                const params = {
+                    Bucket: process.env.S3_BUCKET_NAME!,
+                    Key: key,
+                    Body: fileContent
+                };
+    
+                await s3.upload(params).promise();
+                console.log(`Successfully uploaded ${file} to ${key}`);
             }
-
-            const params = {
-                Bucket: process.env.S3_BUCKET_NAME!,
-                Key: key,
-                Body: fileContent
-            };
-
-            await s3.upload(params).promise();
-            console.log(`Successfully uploaded ${file} to ${key}`);
+           
         }));
     } catch (error) {
         console.error("Error uploading folder to S3:", error);
