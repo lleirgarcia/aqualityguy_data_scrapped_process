@@ -4,6 +4,7 @@ import { promisify } from 'util';
 import { __dirname } from '../utils';
 import path from 'path';
 import { File, OpenAIResponse } from '../interfaces/OpenAIResponse';
+import { uploadFolderToS3 } from './s3Service';
 
 const writeFileAsync = promisify(fs.writeFile);
 const appendFileAsync = promisify(fs.appendFile);
@@ -88,6 +89,7 @@ export class OpenAIService {
                 await writeFileAsync(filePath, fileContent);
                 await this.createHistoryFile(folderPath, fileName, question);
                 await this.createVideoDataFile(folderPath, item);
+                await uploadFolderToS3(folderPath, `dataGenerated/${videoId}`); // Sube a la carpeta correcta
 
                 console.log(`Archivo ${fileName} escrito con éxito en ${folderPath} para el video ${videoId}.`);
                 

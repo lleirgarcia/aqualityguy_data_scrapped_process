@@ -46,6 +46,7 @@ El frontend te permite:
     la pregunta realizada con una sola respuesta general sobre TODO mi contenido.
 [] Mostrar la cantidad total de videos disponibles para recoleccion de data.
 [] Recoger data segun X cantidad de videos (5 ultimos, 10, 20, 50)
+[] Sacar un listado de las preguntas que se han realizado y procesado con anterioridad para ver respuestas ya construidas.
 
 **P2**
 [] Cuando realizo una pregunta, informar de lo que puede tardar y poder hacer otras preguntas.
@@ -54,3 +55,8 @@ El frontend te permite:
 **P3**
 [] Capacidad para hacer N preguntas seguidas.
 [] Mostrar todos los videos de mi tiktok y seleccionar video concreto para hacer pregunta.
+
+**done**
+[] archivos subidos a S3 por videoID en carpeta /generatedData
+[] historico de preguntas subido
+[] datos de video subido
