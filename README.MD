@@ -57,6 +57,5 @@ El frontend te permite:
 [] Mostrar todos los videos de mi tiktok y seleccionar video concreto para hacer pregunta.
 
 **done**
-[] archivos subidos a S3 por videoID en carpeta /generatedData
-[] historico de preguntas subido
-[] datos de video subido
+[] archivos subidos a S3 por videoID en carpeta dataGenerated/ y una carpeta por videoId, tal y como esta en local. se hace una subida cuando se acaba de hacer la pregunta en openAI.
+[] 
