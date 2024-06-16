@@ -84,6 +84,7 @@ export class OpenAIService {
                 const fileName = `${name}-${Date.now()}.txt`;
                 const filePath = path.join(folderPath, fileName);
                 const fileContent = result;
+                
                 await writeFileAsync(filePath, fileContent);
                 await this.createHistoryFile(folderPath, fileName, question);
                 await this.createVideoDataFile(folderPath, item);
@@ -97,7 +98,7 @@ export class OpenAIService {
                 throw new Error('Failed to get response from OpenAI');
             }
             INDEX_TEMPORAL++;
-            if (INDEX_TEMPORAL == 5) break;
+            // if (INDEX_TEMPORAL == 5) break;
         }
 
         return responses;
@@ -133,7 +134,7 @@ export class OpenAIService {
         console.log("Creating history file...")
         const historyFilePath = path.join(folderPath, 'history.txt');
         const currentDate = new Date().toLocaleString();
-        const historyContent = `File name: ${fileName} -- Current date: ${currentDate} -- Question: ${question}\n`;
+        const historyContent = `File name: ${fileName} -- Current date: ${currentDate} -- Question: ${question}`;
 
         try {
             await accessAsync(historyFilePath, fs.constants.F_OK);
