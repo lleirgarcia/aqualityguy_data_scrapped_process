@@ -26,6 +26,13 @@ const addJsExtension = (dir) => {
         return importExt === "" ? `${p1}${p2}.js${p3}` : match;
       });
 
+      // Asegurar que todos los imports relativos se actualicen
+      content = content.replace(/(import\s+[\s\S]*?['"])(\.\.\/[^'"]+)(['"])/g, (match, p1, p2, p3) => {
+        const importPath = path.resolve(path.dirname(fullPath), p2);
+        const importExt = path.extname(importPath);
+        return importExt === "" ? `${p1}${p2}.js${p3}` : match;
+      });
+
       fs.writeFileSync(fullPath, content, "utf8");
     }
   });
