@@ -31,6 +31,7 @@ function formatJSON(rawData: string): any {
 }
 
 export const fetchFilesFromS3 = async (): Promise<S3File[]> => {
+    console.log("Fecth files from s3...")
     const cacheKey = "s3Files";
     const cachedFiles = s3Cache.get<S3File[]>(cacheKey);
 
@@ -104,5 +105,25 @@ export const uploadFolderToS3 = async (folderPath: string, baseKey: string) => {
     } catch (error) {
         console.error("Error uploading folder to S3:", error);
         throw new Error("Failed to upload folder to S3");
+    }
+};
+
+export const uploadFileToS3 = async (filePath: string, s3Key: string): Promise<string> => {
+    console.log("Uploading file to S3...")
+    const fileContent = await readFileAsync(filePath);
+    const params = {
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Key: s3Key,
+        Body: fileContent
+    };
+
+    try {
+        await s3.headObject({ Bucket: process.env.S3_BUCKET_NAME!, Key: s3Key }).promise();
+        console.log(`File ${s3Key} already exists in S3. Skipping upload.`);
+        return `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${s3Key}`;
+    } catch (error) {
+        await s3.upload(params).promise();
+        console.log(`Successfully uploaded ${s3Key} to S3`);
+        return `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${s3Key}`;
     }
 };
