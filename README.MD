@@ -1,5 +1,41 @@
 # Ask my TikTok Data
 
+## Description
+
+Hey! It's a pleasure to have you here, welcome.
+
+If you don’t know, I have a TikTok account where I share my knowledge from over 10 years of experience in technology (specifically software web development) as a QA. I talk about tips, self-improvement, finding better companies, project situations, and much more. If you want to take a look, here’s the link: https://www.tiktok.com/@aqualityguy.
+
+One day, I decided to gather all that data (more than 300 videos, 90k likes, and 10k comments) and use it to create questions.
+
+That’s the reason why this project started.
+
+The objective is to create a webpage where you can ask whatever you want, review the data, use the OpenAI API to ask questions, and get answers.
+
+**RIGHT NOW APPLICATION IS UNDER CONSTRUCTION**
+
+## Tech stack summary 
+Application is made from a backend and frontend sides with different technology, mainly Express for the back and React for the front.
+Application is made and built in Typescript.
+Applitacion uses AWS S3 to keep and use the data files for the users.
+Application uses OpenAI to make questions about the data.
+
+## Tech stack an versions
+Backend
+- Express 4.15
+- cors 2.8.5
+- axios 1.7.2
+- openai 4.50
+- nodemailer 6.9.13
+- aws-sdk 2.1638
+- archiver 7.0.1
+- node-cache 5.1.2
+
+Frontend
+- react 18.3.1
+
+Testing
+
 ## How to execute
 
 From the root of project:
