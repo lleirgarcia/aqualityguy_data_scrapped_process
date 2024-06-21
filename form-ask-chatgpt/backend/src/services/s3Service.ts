@@ -30,9 +30,9 @@ function formatJSON(rawData: string): any {
     }
 }
 
-export const fetchFilesFromS3 = async (): Promise<S3File[]> => {
-    console.log("Fecth files from s3...")
-    const cacheKey = "s3Files";
+export const fetchFilesFromS3 = async (folder: string): Promise<S3File[]> => {
+    console.log(`Fetching files from S3 folder: ${folder}`);
+    const cacheKey = `s3Files_${folder}`;
     const cachedFiles = s3Cache.get<S3File[]>(cacheKey);
 
     if (cachedFiles) {
@@ -41,7 +41,8 @@ export const fetchFilesFromS3 = async (): Promise<S3File[]> => {
     }
 
     const params = {
-        Bucket: process.env.S3_BUCKET_NAME!
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Prefix: folder.endsWith('/') ? folder : `${folder}/`  // Ensure folder ends with '/'
     };
 
     try {
@@ -54,7 +55,13 @@ export const fetchFilesFromS3 = async (): Promise<S3File[]> => {
                 Key: object.Key!
             };
             const objectData = await s3.getObject(objectParams).promise();
-            const formattedData = objectData.Body ? formatJSON(objectData.Body.toString('utf-8')) : null;
+            let formattedData = objectData.Body ? objectData.Body.toString('utf-8') : null;
+
+            // Verificar la extensión del archivo para determinar si debe ser formateado a JSON
+            if (object.Key && object.Key.endsWith('.json') && formattedData) {
+                formattedData = formatJSON(formattedData);
+            }
+
             return {
                 Key: object.Key!,
                 Body: formattedData
@@ -69,9 +76,71 @@ export const fetchFilesFromS3 = async (): Promise<S3File[]> => {
     }
 };
 
+
+export const fetchFileFromS3 = async (fileKey: string): Promise<S3File | null> => {
+    console.log(`Fetching file from S3: ${fileKey}`);
+    const params = {
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Key: fileKey
+    };
+
+    try {
+        const objectData = await s3.getObject(params).promise();
+        return {
+            Key: fileKey,
+            Body: objectData.Body ? objectData.Body.toString('utf-8') : null
+        };
+    } catch (error) {
+        if (error === 'NoSuchKey' || error === 'NotFound') {
+            console.warn(`File ${fileKey} not found.`);
+            return null; // Return null if the file does not exist
+        }
+        console.error("Error fetching file from S3:", error);
+        throw new Error("Failed to fetch file from S3");
+    }
+};
+
+export const writeFileToS3 = async (fileKey: string, content: string): Promise<void> => {
+    const params = {
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Key: fileKey,
+        Body: content,
+        ContentType: 'text/plain'
+    };
+
+    try {
+        await s3.putObject(params).promise();
+        console.log(`File ${fileKey} has been updated in S3`);
+    } catch (error) {
+        console.error("Error writing to file in S3:", error);
+        throw new Error("Failed to write to file in S3");
+    }
+};
+
+
+export const updateHistoricFileWithQuestion = async (fileKey: string, question: string): Promise<void> => {
+    try {
+        // Leer el archivo existente desde S3
+        const file = await fetchFileFromS3(fileKey);
+        let updatedContent = question;
+
+        if (file && file.Body) {
+            // Agregar la nueva pregunta al contenido existente
+            updatedContent = `${file.Body}\n${question}`;
+        }
+
+        // Escribir el archivo actualizado de vuelta a S3
+        await writeFileToS3(fileKey, updatedContent);
+        console.log(`Question added to ${fileKey}`);
+    } catch (error) {
+        console.error("Error updating historic file:", error);
+        throw new Error("Failed to update historic file");
+    }
+};
+
 export const uploadFolderToS3 = async (folderPath: string, baseKey: string) => {
-    console.log(`Folder path ${folderPath}`)
-    console.log(`Basekey ${baseKey}`)
+    console.log(`Folder path ${folderPath}`);
+    console.log(`Basekey ${baseKey}`);
     try {
         const files = await readDirAsync(folderPath);
 
@@ -100,7 +169,6 @@ export const uploadFolderToS3 = async (folderPath: string, baseKey: string) => {
                 await s3.upload(params).promise();
                 console.log(`Successfully uploaded ${file} to ${key}`);
             }
-           
         }));
     } catch (error) {
         console.error("Error uploading folder to S3:", error);
@@ -109,7 +177,7 @@ export const uploadFolderToS3 = async (folderPath: string, baseKey: string) => {
 };
 
 export const uploadFileToS3 = async (filePath: string, s3Key: string): Promise<string> => {
-    console.log("Uploading file to S3...")
+    console.log("Uploading file to S3...");
     const fileContent = await readFileAsync(filePath);
     const params = {
         Bucket: process.env.S3_BUCKET_NAME!,
