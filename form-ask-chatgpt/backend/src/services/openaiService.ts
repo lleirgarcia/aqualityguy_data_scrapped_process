@@ -42,13 +42,19 @@ export class OpenAIService {
      * @param files 
      * @returns 
      */
-    async getOpenAIResponse(question: string, files: File[]): Promise<OpenAIResponse[]> {
+    async createResponsesByOpenAI(question: string, files: File[]): Promise<OpenAIResponse[]> {
         console.log("Generating OpenAI responses...");
 
         const responses: OpenAIResponse[] = [];
         let INDEX_TEMPORAL = 0;
         for (const file of files) {
-            const item = file.Body; 
+            let item; 
+            try {
+                item = JSON.parse(file.Body);
+            } catch (error) {
+                console.error("Error parsing JSON:", error);
+                continue;
+            }
             const itemString = JSON.stringify(item, null, 2);
             const videoId = this.extractVideoId(item.url);
 
@@ -61,14 +67,10 @@ export class OpenAIService {
             await this.createFolderIfNotExists(folderPath);
 
             const prompt = `
-            You are a helpful assistant. Here is a question related to a specific item:
-            Question: ${question}
+            I share with you the videos data and I wanna u answer me a question: ${question}
+            Here is the videos data: ${itemString}
             
-            Here is the item:
-            ${itemString}
-            
-            Please provide a detailed response based on the question and the item.
-            
+            Please provide response based on the question and the data but be clear and not repetitive. Avoid to provide not important information.
             Give me the response in Spanish!
             `;
 
@@ -98,7 +100,7 @@ export class OpenAIService {
                 throw new Error('Failed to get response from OpenAI');
             }
             INDEX_TEMPORAL++;
-            // if (INDEX_TEMPORAL == 5) break;
+            // if (INDEX_TEMPORAL == 1) break;
         }
 
         return responses;
