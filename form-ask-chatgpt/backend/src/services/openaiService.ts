@@ -55,13 +55,16 @@ export class OpenAIService {
                 console.error("Error parsing JSON:", error);
                 continue;
             }
-            const itemString = JSON.stringify(item, null, 2);
+            
             const videoId = this.extractVideoId(item.url);
 
             if (!videoId) {
                 console.error("Invalid URL format:", item.url);
                 continue;
             }
+
+            let itemForOpenAI = this.formatJSONForOpenAI(item)
+            const itemString = JSON.stringify(itemForOpenAI, null, 2);
 
             const folderPath = path.join(__dirname, '../../uploads', videoId);
             await this.createFolderIfNotExists(folderPath);
@@ -76,7 +79,7 @@ export class OpenAIService {
 
             try {
                 const response = await this.openai.chat.completions.create({
-                    model: "gpt-4-turbo",
+                    model: "gpt-3.5-turbo",
                     messages: [{ role: 'user', content: prompt }],
                     max_tokens: 4096
                 });
@@ -155,10 +158,20 @@ export class OpenAIService {
 
         try {
             await accessAsync(videoDataFilePath, fs.constants.F_OK);
-            // Si videoData.txt existe, no hacer nada
         } catch (error) {
-            // Si videoData.txt no existe, crea y escribe el contenido
             await writeFileAsync(videoDataFilePath, videoDataContent);
         }
     }
+
+    
+    private formatJSONForOpenAI(json: any): FomattedJSONShortAnswer {
+        return {
+            videoDesc: json.videoDesc,
+            comments: json.comments.map((comment: any) => ({
+                mainComment: comment.mainComment,
+                replies: comment.replies.map((reply: any) => reply.comment)
+            }))
+        };
+    }
+
 }

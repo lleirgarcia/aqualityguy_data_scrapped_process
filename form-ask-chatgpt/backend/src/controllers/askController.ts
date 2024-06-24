@@ -17,7 +17,7 @@ const askController = async (req: Request, res: Response) => {
     console.log("asking...");
     const { question, email } = req.body;
     try {
-        updateHistoricFileWithQuestion(getEnvVariable('S3_HISTORIC'), question)
+        await updateHistoricFileWithQuestion(getEnvVariable('S3_HISTORIC'), question)
         const files = await fetchFilesFromS3(getEnvVariable('S3_JSON_FILES'));
         await openaiService.createResponsesByOpenAI(question, files);
         const zipFilePath = await compressFiles(email);
