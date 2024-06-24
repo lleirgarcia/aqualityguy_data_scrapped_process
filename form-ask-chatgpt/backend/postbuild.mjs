@@ -16,6 +16,13 @@ const addJsExtension = (dir) => {
       content = content.replace(/(from\s+['"])(\.\/[^'"]+)(['"])/g, (match, p1, p2, p3) => {
         const importPath = path.resolve(path.dirname(fullPath), p2);
         const importExt = path.extname(importPath);
+        const baseName = path.basename(importPath);
+
+        // Excluir rutas específicas de la adición de extensión .js
+        if (baseName === 'uploads') {
+          return match; // No añadir .js a 'uploads'
+        }
+
         return importExt === "" ? `${p1}${p2}.js${p3}` : match;
       });
 
@@ -23,6 +30,13 @@ const addJsExtension = (dir) => {
       content = content.replace(/(import\(['"])(\.\/[^'"]+)(['"]\))/g, (match, p1, p2, p3) => {
         const importPath = path.resolve(path.dirname(fullPath), p2);
         const importExt = path.extname(importPath);
+        const baseName = path.basename(importPath);
+
+        // Excluir rutas específicas de la adición de extensión .js
+        if (baseName === 'uploads') {
+          return match; // No añadir .js a 'uploads'
+        }
+
         return importExt === "" ? `${p1}${p2}.js${p3}` : match;
       });
 
@@ -30,6 +44,13 @@ const addJsExtension = (dir) => {
       content = content.replace(/(import\s+[\s\S]*?['"])(\.\.\/[^'"]+)(['"])/g, (match, p1, p2, p3) => {
         const importPath = path.resolve(path.dirname(fullPath), p2);
         const importExt = path.extname(importPath);
+        const baseName = path.basename(importPath);
+
+        // Excluir rutas específicas de la adición de extensión .js
+        if (baseName === 'uploads') {
+          return match; // No añadir .js a 'uploads'
+        }
+
         return importExt === "" ? `${p1}${p2}.js${p3}` : match;
       });
 

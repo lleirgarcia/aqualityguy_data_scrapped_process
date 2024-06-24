@@ -42,14 +42,20 @@ export class OpenAIService {
      * @param files 
      * @returns 
      */
-    async getOpenAIResponse(question: string, files: File[]): Promise<OpenAIResponse[]> {
+    async createResponsesByOpenAI(question: string, files: File[]): Promise<OpenAIResponse[]> {
         console.log("Generating OpenAI responses...");
 
         const responses: OpenAIResponse[] = [];
         let INDEX_TEMPORAL = 0;
         for (const file of files) {
-            const item = file.Body; 
-            const itemString = JSON.stringify(item, null, 2);
+            let item; 
+            try {
+                item = JSON.parse(file.Body);
+            } catch (error) {
+                console.error("Error parsing JSON:", error);
+                continue;
+            }
+            
             const videoId = this.extractVideoId(item.url);
 
             if (!videoId) {
@@ -57,24 +63,23 @@ export class OpenAIService {
                 continue;
             }
 
+            let itemForOpenAI = this.formatJSONForOpenAI(item)
+            const itemString = JSON.stringify(itemForOpenAI, null, 2);
+
             const folderPath = path.join(__dirname, '../../uploads', videoId);
             await this.createFolderIfNotExists(folderPath);
 
             const prompt = `
-            You are a helpful assistant. Here is a question related to a specific item:
-            Question: ${question}
+            I share with you the videos data and I wanna u answer me a question: ${question}
+            Here is the videos data: ${itemString}
             
-            Here is the item:
-            ${itemString}
-            
-            Please provide a detailed response based on the question and the item.
-            
+            Please provide response based on the question and the data but be clear and not repetitive. Avoid to provide not important information.
             Give me the response in Spanish!
             `;
 
             try {
                 const response = await this.openai.chat.completions.create({
-                    model: "gpt-4-turbo",
+                    model: "gpt-3.5-turbo",
                     messages: [{ role: 'user', content: prompt }],
                     max_tokens: 4096
                 });
@@ -98,7 +103,7 @@ export class OpenAIService {
                 throw new Error('Failed to get response from OpenAI');
             }
             INDEX_TEMPORAL++;
-            // if (INDEX_TEMPORAL == 5) break;
+            // if (INDEX_TEMPORAL == 1) break;
         }
 
         return responses;
@@ -153,10 +158,20 @@ export class OpenAIService {
 
         try {
             await accessAsync(videoDataFilePath, fs.constants.F_OK);
-            // Si videoData.txt existe, no hacer nada
         } catch (error) {
-            // Si videoData.txt no existe, crea y escribe el contenido
             await writeFileAsync(videoDataFilePath, videoDataContent);
         }
     }
+
+    
+    private formatJSONForOpenAI(json: any): FomattedJSONShortAnswer {
+        return {
+            videoDesc: json.videoDesc,
+            comments: json.comments.map((comment: any) => ({
+                mainComment: comment.mainComment,
+                replies: comment.replies.map((reply: any) => reply.comment)
+            }))
+        };
+    }
+
 }

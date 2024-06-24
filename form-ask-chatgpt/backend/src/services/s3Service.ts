@@ -3,6 +3,7 @@ import NodeCache from 'node-cache';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import { S3File } from 'interfaces/S3';
 
 const s3Cache = new NodeCache({ stdTTL: 3600 });
 
@@ -16,19 +17,19 @@ const s3 = new AWS.S3();
 const readDirAsync = promisify(fs.readdir);
 const readFileAsync = promisify(fs.readFile);
 
-interface S3File {
-    Key: string;
-    Body: any;
-}
-
-function formatJSON(rawData: string): any {
-    try {
-        return JSON.parse(rawData);
-    } catch (e) {
-        const cleanedData = rawData.replace(/\\n/g, '').replace(/\\/g, '');
-        return JSON.parse(cleanedData);
-    }
-}
+const formatJSONForOpenAI = (json: any): FormattedJSON => {
+    return {
+        videoDesc: json.videoDesc,
+        url: json.url,
+        totalLikes: json.totalLikes,
+        totalComments: json.totalComments,
+        videoViews: json.videoViews,
+        comments: json.commentList.map((comment: any) => ({
+            mainComment: comment.mainComment,
+            replies: comment.replies.map((reply: any) => reply.comment)
+        }))
+    };
+};
 
 export const fetchFilesFromS3 = async (folder: string): Promise<S3File[]> => {
     console.log(`Fetching files from S3 folder: ${folder}`);
@@ -59,7 +60,8 @@ export const fetchFilesFromS3 = async (folder: string): Promise<S3File[]> => {
 
             // Verificar la extensión del archivo para determinar si debe ser formateado a JSON
             if (object.Key && object.Key.endsWith('.json') && formattedData) {
-                formattedData = formatJSON(formattedData);
+                const parsedData = JSON.parse(formattedData);
+                formattedData = JSON.stringify(formatJSONForOpenAI(parsedData));
             }
 
             return {
@@ -75,7 +77,6 @@ export const fetchFilesFromS3 = async (folder: string): Promise<S3File[]> => {
         throw new Error("Failed to retrieve data from S3");
     }
 };
-
 
 export const fetchFileFromS3 = async (fileKey: string): Promise<S3File | null> => {
     console.log(`Fetching file from S3: ${fileKey}`);
@@ -116,7 +117,6 @@ export const writeFileToS3 = async (fileKey: string, content: string): Promise<v
         throw new Error("Failed to write to file in S3");
     }
 };
-
 
 export const updateHistoricFileWithQuestion = async (fileKey: string, question: string): Promise<void> => {
     try {
