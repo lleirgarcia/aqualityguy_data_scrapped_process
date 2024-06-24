@@ -3,6 +3,7 @@ import NodeCache from 'node-cache';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import { S3File } from 'interfaces/S3';
 
 const s3Cache = new NodeCache({ stdTTL: 3600 });
 
@@ -16,26 +17,13 @@ const s3 = new AWS.S3();
 const readDirAsync = promisify(fs.readdir);
 const readFileAsync = promisify(fs.readFile);
 
-interface S3File {
-    Key: string;
-    Body: any;
-}
-
-interface FormattedComment {
-    mainComment: string;
-    replies: string[];
-}
-
-interface FormattedJSON {   
-    videoDesc: string;
-    url: string;
-    comments: FormattedComment[];
-}
-
 const formatJSONForOpenAI = (json: any): FormattedJSON => {
     return {
         videoDesc: json.videoDesc,
         url: json.url,
+        totalLikes: json.totalLikes,
+        totalComments: json.totalComments,
+        videoViews: json.videoViews,
         comments: json.commentList.map((comment: any) => ({
             mainComment: comment.mainComment,
             replies: comment.replies.map((reply: any) => reply.comment)
