@@ -31,7 +31,7 @@ const formatJSONForOpenAI = (json: any): FormattedJSON => {
     };
 };
 
-export const fetchFilesFromS3 = async (folder: string): Promise<S3File[]> => {
+export const fetchFilesFromS3 = async (folder: string, videoCount: number): Promise<S3File[]> => {
     console.log(`Fetching files from S3 folder: ${folder}`);
     const cacheKey = `s3Files_${folder}`;
     const cachedFiles = s3Cache.get<S3File[]>(cacheKey);
@@ -48,7 +48,7 @@ export const fetchFilesFromS3 = async (folder: string): Promise<S3File[]> => {
 
     try {
         const data = await s3.listObjectsV2(params).promise();
-        const limitedObjects = data.Contents?.slice(0, 200) || [];
+        const limitedObjects = data.Contents?.slice(0, videoCount) || [];
 
         const files = await Promise.all(limitedObjects.map(async object => {
             const objectParams = {

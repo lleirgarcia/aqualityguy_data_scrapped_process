@@ -15,10 +15,11 @@ const openaiService = new OpenAIService(process.env.OPENAI_API_KEY!);
 
 const askController = async (req: Request, res: Response) => {
     console.log("asking...");
-    const { question, email } = req.body;
+    const { question, email, videoCount } = req.body;
     try {
         await updateHistoricFileWithQuestion(getEnvVariable('S3_HISTORIC'), question)
-        const files = await fetchFilesFromS3(getEnvVariable('S3_JSON_FILES'));
+        const files = await fetchFilesFromS3(getEnvVariable('S3_JSON_FILES'), videoCount);
+        console.log(videoCount)
         await openaiService.createResponsesByOpenAI(question, files);
         const zipFilePath = await compressFiles(email);
         const s3Key = `dataGenerated/historic/compressed_files_${email}.zip`;
