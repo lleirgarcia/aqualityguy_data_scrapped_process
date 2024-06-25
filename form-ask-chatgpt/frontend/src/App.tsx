@@ -1,8 +1,12 @@
-// src/ChatForm.tsx
-
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import axios from 'axios';
 import './App.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTiktok, faInstagram, faYoutube, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+
+config.autoAddCss = false;
 
 const ChatForm: React.FC = () => {
     const [question, setQuestion] = useState<string>('');
@@ -55,11 +59,24 @@ const ChatForm: React.FC = () => {
                     <select value={videoCount} onChange={handleSelectChange}>
                         <option value="5">5 últimos videos</option>
                         <option value="10">10 últimos videos</option>
-                        <option value="50">50 últimos videos</option>
-                        <option value="all">Todos los videos disponibles</option>
+                        <option value="30">30 últimos videos</option>
                     </select>
                     <button type="submit">Hacer pregunta</button>
                 </form>
+                <div className="social-icons">
+                    <a href="https://www.tiktok.com/@aqualityguy" target="_blank" rel="noopener noreferrer">
+                        <FontAwesomeIcon icon={faTiktok} size="2x" />
+                    </a>
+                    <a href="https://www.instagram.com/aqualityguy" target="_blank" rel="noopener noreferrer">
+                        <FontAwesomeIcon icon={faInstagram} size="2x" />
+                    </a>
+                    <a href="https://www.youtube.com/@aqualityguy" target="_blank" rel="noopener noreferrer">
+                        <FontAwesomeIcon icon={faYoutube} size="2x" />
+                    </a>
+                    <a href="https://www.linkedin.com/in/lleirgarcia" target="_blank" rel="noopener noreferrer">
+                        <FontAwesomeIcon icon={faLinkedin} size="2x" />
+                    </a>
+                </div>
             </div>
             {/* <div className="Response" role="textbox" aria-multiline="true">
                 Respuesta: {response}
