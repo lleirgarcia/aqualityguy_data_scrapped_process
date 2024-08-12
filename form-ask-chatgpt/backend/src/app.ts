@@ -3,6 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import dotenv from 'dotenv';
 import askController from './controllers/askController';
+import askVideoController from './controllers/askVideoController';
 import dataController from './controllers/dataController';
 import { __dirname } from './utils';
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/ask', askController);
+app.post('/ask-video', askVideoController);
 app.get('/data', dataController);
 
 export default app;

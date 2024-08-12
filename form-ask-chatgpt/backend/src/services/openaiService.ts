@@ -18,6 +18,43 @@ export class OpenAIService {
         this.openai = new OpenAI({ apiKey: apiKey });
     }
 
+    async askOpenAI(question: string, file: any): Promise<string> {
+        console.log("Generating OpenAI response...");
+        console.log(file);
+        try {
+            const videoId = this.extractVideoId(file.url);
+            if (!videoId) {
+                console.error("Invalid URL format:", file.url);
+                throw new Error('Invalid URL format');
+            }
+    
+            const itemString = JSON.stringify(this.formatJSONForOpenAI(file), null, 2);
+            
+            const prompt = `
+            I share with you the videos data and I wanna u answer me a question: ${question}
+            Here is the videos data: ${itemString}
+            
+            Please provide response based on the question and the data but be clear and not repetitive. Avoid to provide not important information.
+            Give me the response in Spanish!
+            `;
+    
+            const response = await this.openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 4096
+            });
+    
+            const result = response.choices[0].message?.content || 'No response';
+            
+            return result;
+    
+        } catch (error) {
+            console.error("Error processing file:", error);
+            throw new Error('Failed to get response from OpenAI');
+        }
+    }
+    
+
     /**
      * La funcion procesa una pregunta por cada uno de los ficheros JSON con datos.
      * Cuando obtiene la respuesta de OpenAI, se crea un fichero .txt que se almacena.
