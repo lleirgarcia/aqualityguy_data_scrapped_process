@@ -51,7 +51,6 @@ export const fetchFilesFromS3 = async (folder: string): Promise<S3File[]> => {
         const limitedObjects = data.Contents?.slice(0, 500) || [];
 
         const files = await Promise.all(limitedObjects.map(async object => {
-            console.log("fetching...")
             const objectParams = {
                 Bucket: params.Bucket,
                 Key: object.Key!
