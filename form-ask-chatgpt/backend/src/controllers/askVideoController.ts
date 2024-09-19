@@ -25,8 +25,6 @@ const askVideoController = async (req: Request, res: Response) => {
     }
 
     res.json({ message: 'Respuesta generada por OpenAI', question, url, openAIResponse: response });
-
-
 };
 
 export default askVideoController;
