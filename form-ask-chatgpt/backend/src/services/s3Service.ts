@@ -48,7 +48,7 @@ export const fetchFilesFromS3 = async (folder: string): Promise<S3File[]> => {
 
     try {
         const data = await s3.listObjectsV2(params).promise();
-        const limitedObjects = data.Contents?.slice(0, 200) || [];
+        const limitedObjects = data.Contents?.slice(0, 500) || [];
 
         const files = await Promise.all(limitedObjects.map(async object => {
             const objectParams = {

@@ -1,5 +1,3 @@
-// src/ChatForm.tsx
-
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import axios from 'axios';
 import './App.css';

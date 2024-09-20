@@ -3,45 +3,56 @@ body, html {
   height: 100%;
   margin: 0;
   padding: 0; 
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow-y: auto; /* Permite el scroll natural en el navegador */
   color: white;
   background-color: #000000;
 }
+
 .App {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start; /* Alinea el contenido hacia arriba */
+  align-items: flex-start; /* Alinea el contenido hacia arriba */
+  flex-direction: column; /* Coloca los elementos uno debajo del otro */
   height: 100%;
+  width: 100%;
+  padding-top: 20px; /* Añade un pequeño margen superior */
+}
+
+.ChatFormContainer {
   width: 100%;
 }
 
 .ChatForm {
-  padding: 40px; /* Asegúrate de que este padding no está empujando los elementos internos */
+  padding: 20px; /* Reduce el padding para acercar el contenido */
   max-width: 800px; /* O ajusta según lo necesites */
   width: 40%; /* Usa un porcentaje del ancho para que sea responsive */
   margin: auto; /* Centra el formulario en la página */
   text-align: center;
 }
-.ChatForm textarea, .ChatForm select, .ChatForm button, .ChatForm input[type="email"] {
+
+.ChatForm textarea, 
+.ChatForm select, 
+.ChatForm button, 
+.ChatForm input[type="email"], 
+.ChatForm input[type="text"] {
   width: 100%;
-  padding: 15px; /* Padding cómodo para la entrada de texto */
+  padding: 15px;
   margin-top: 8px;
-  border: 2px solid #aaa; /* Borde visible pero no intrusivo */
+  border: 2px solid #aaa;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.2); /* Ligeramente transparente para un look moderno */
-  color: white; /* Texto blanco para contraste */
-  font-size: 16px; /* Tamaño de fuente adecuado */
-  box-sizing: border-box; /* Asegura que padding y border están incluidos en el ancho */
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 16px;
+  box-sizing: border-box;
 }
-option{
+
+option {
   color: black;
 }
+
 .ChatForm button {
   margin-top: 20px;
-  background-color: #5a4e7c; /* Botón lila oscuro */
+  background-color: #5a4e7c;
   color: white;
   border: none;
   border-radius: 4px;
@@ -50,7 +61,7 @@ option{
 }
 
 .ChatForm button:hover {
-  background-color: #453764; /* Un lila más oscuro para el hover */
+  background-color: #453764;
 }
 
 .pre {
@@ -64,18 +75,30 @@ option{
 }
 
 .Response {
-  width: 100%; /* Utiliza el 100% del ancho de la pantalla */
-  max-width: 1200px; /* Establece un ancho máximo */
-  margin-left: auto; /* Centra horizontalmente */
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
   margin-right: auto;
-  background-color: #000000; /* Fondo negro */
-  color: #fff; /* Texto blanco */
+  background-color: #000000;
+  color: #fff;
   padding: 20px;
   border-radius: 0;
   margin-top: 20px;
   text-align: left;
   overflow: auto;
-  min-height: 50px; /* Altura mínima inicial */
-  white-space: pre-wrap; /* Respeta los espacios y saltos de línea */
-  word-wrap: break-word; /* Asegura que las palabras largas no desborden */
+  min-height: 50px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
+
+
+
+
+
+
+
+
+
+
+
+
