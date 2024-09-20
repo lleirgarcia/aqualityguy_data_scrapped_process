@@ -8,7 +8,7 @@ const HomePage: React.FC = () => {
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: '100vh',
-      backgroundColor: '#000000',  // Cambiamos el fondo a negro
+      backgroundColor: '#000000',  
       fontFamily: 'Arial, sans-serif',
     },
     chatFormContainer: {
@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
       alignItems: 'center',
     },
     card: {
-      backgroundColor: '#2B004A',  // Púrpura extremadamente oscuro
+      backgroundColor: '#2B004A', 
       borderRadius: '15px',
       boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
       overflow: 'hidden',
@@ -41,11 +41,11 @@ const HomePage: React.FC = () => {
     cardTitle: {
       fontSize: '1.5rem',
       marginBottom: '10px',
-      color: 'white',  // Título en blanco
+      color: 'white', 
     },
     cardDescription: {
       fontSize: '1rem',
-      color: '#d3d3d3',  // Subtítulo en gris claro
+      color: '#d3d3d3', 
     },
   };
 
@@ -53,7 +53,6 @@ const HomePage: React.FC = () => {
     <div style={styles.app}>
       <div style={styles.chatFormContainer}>
         <div style={styles.cardContainer}>
-          {/* Tarjeta para consultar un video específico */}
           <Link to="/specific-video" style={styles.card}>
             <div style={styles.cardContent}>
               <h2 style={styles.cardTitle}>Consultar un video específico</h2>
@@ -62,8 +61,6 @@ const HomePage: React.FC = () => {
               </p>
             </div>
           </Link>
-
-          {/* Tarjeta para consultar en todos los videos */}
           <Link to="/general" style={styles.card}>
             <div style={styles.cardContent}>
               <h2 style={styles.cardTitle}>Consultar en todos los videos</h2>
