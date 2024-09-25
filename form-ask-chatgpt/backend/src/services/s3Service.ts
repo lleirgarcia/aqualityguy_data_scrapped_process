@@ -38,7 +38,7 @@ export const fetchFilesFromS3 = async (folder: string, videoCount:number = 500):
         Bucket: process.env.S3_BUCKET_NAME!,
         Prefix: folder.endsWith('/') ? folder : `${folder}/`  // Ensure folder ends with '/'
     };
-    
+
     try {
         const data = await s3.listObjectsV2(params).promise();
         const limitedObjects = data.Contents?.slice(0, videoCount) || [];
@@ -172,8 +172,6 @@ export const uploadFolderToS3 = async (folderPath: string, baseKey: string) => {
 
 export const uploadFileToS3 = async (filePath: string, s3Key: string): Promise<string> => {
     console.log("Uploading file to S3...");
-    console.log("File: " + filePath)
-    console.log("File: " + s3Key)
     const fileContent = await readFileAsync(filePath);
     const params = {
         Bucket: process.env.S3_BUCKET_NAME!,
