@@ -103,7 +103,7 @@ export class OpenAIService {
             let itemForOpenAI = this.formatJSONForOpenAI(item)
             const itemString = JSON.stringify(itemForOpenAI, null, 2);
 
-            const folderPath = path.join(__dirname, '../../uploads', videoId);
+            const folderPath = path.join(__dirname, '../../uploads/files', videoId);
             await this.createFolderIfNotExists(folderPath);
 
             const prompt = `

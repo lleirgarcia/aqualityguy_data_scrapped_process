@@ -8,9 +8,10 @@ const mkdirAsync = promisify(fs.mkdir);
 const accessAsync = promisify(fs.access);
 
 export const compressFiles = async (email: string): Promise<string> => {
-    console.log(`Compressing ${email}...`)
-    const uploadDir = path.join(__dirname, '../../uploads');
-    const outputFilePath = path.join(uploadDir, `compressed_files_${email}.zip`);
+    console.log(`Compressing ${email}...`);
+
+    const uploadDir = path.join(__dirname, '../../uploads/files.js');
+    const outputFilePath = path.join(__dirname, `../../uploads/compressed_files_${email}.zip`);
 
     try {
         await accessAsync(uploadDir, fs.constants.F_OK);

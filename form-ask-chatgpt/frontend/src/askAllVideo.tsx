@@ -4,18 +4,24 @@ import './App.css';
 
 const ChatForm: React.FC = () => {
     const [question, setQuestion] = useState<string>('');
-    const [response, setResponse] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
+    const [response, setResponse] = useState<string>(''); 
+    const [email, setEmail] = useState<string>(''); 
     const [videoCount, setVideoCount] = useState<string>('5');
+    const [isLoading, setIsLoading] = useState<boolean>(false); // Estado para el spinner
+    const [emailSentMessage, setEmailSentMessage] = useState<string>(''); // Mensaje de correo enviado
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsLoading(true); // Inicia el spinner cuando se envía la solicitud
         try {
             const res = await axios.post('http://localhost:3001/ask', { question, email, videoCount });
             setResponse(JSON.stringify(res.data, null, 2));
+            setEmailSentMessage(`Se te ha enviado un email a ${email}`); // Mensaje de éxito cuando la llamada finaliza
         } catch (error) {
             console.error('Error al llamar a la API:', error);
             setResponse('Error al procesar la solicitud.');
+        } finally {
+            setIsLoading(false); // Oculta el spinner cuando finaliza la solicitud
         }
     };
 
@@ -59,9 +65,22 @@ const ChatForm: React.FC = () => {
                     <button type="submit">Hacer pregunta</button>
                 </form>
             </div>
-            {/* <div className="Response" role="textbox" aria-multiline="true">
-                Respuesta: {response}
-            </div> */}
+
+            <div className="Response" role="textbox" aria-multiline="true">
+                {/* Muestra el mensaje de advertencia si la solicitud está en proceso */}
+                {isLoading && (
+                    <p className="warning-message">
+                        This operation may take a few minutes. Once completed, you will receive an email with the information.
+                    </p>
+                )}
+                {/* Muestra el spinner si la solicitud está en proceso */}
+                {isLoading ? (
+                    <div className="spinner"></div>
+                ) : (
+                    // Muestra el mensaje de email enviado si la solicitud ha finalizado con éxito
+                    emailSentMessage && <p>{emailSentMessage}</p>
+                )}
+            </div>
         </div>
     );
 }

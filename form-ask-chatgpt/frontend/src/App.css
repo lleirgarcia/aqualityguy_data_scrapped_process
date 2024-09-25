@@ -1,4 +1,3 @@
-/* src/App.css */
 body, html {
   height: 100%;
   margin: 0;
@@ -91,14 +90,22 @@ option {
   word-wrap: break-word;
 }
 
+/* Spinner styling */
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border-left-color: #fff;
+  animation: spin 1s ease infinite;
+  margin: 20px auto; /* Centrar el spinner */
+}
 
-
-
-
-
-
-
-
-
-
-
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
