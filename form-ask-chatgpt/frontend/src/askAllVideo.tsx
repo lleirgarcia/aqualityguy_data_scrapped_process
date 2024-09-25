@@ -21,7 +21,7 @@ const ChatForm: React.FC = () => {
             console.error('Error al llamar a la API:', error);
             setResponse('Error al procesar la solicitud.');
         } finally {
-            setIsLoading(false); // Oculta el spinner cuando finaliza la solicitud
+            setIsLoading(false); 
         }
     };
 
