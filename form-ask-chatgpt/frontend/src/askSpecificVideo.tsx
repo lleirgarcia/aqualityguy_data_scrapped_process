@@ -7,18 +7,28 @@ const ChatForm: React.FC = () => {
     const [response, setResponse] = useState<string>('');
     const [url, setUrl] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false); // Estado para controlar el spinner
+    const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para manejar mensajes de error
+
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true); // Muestra el spinner cuando comienza la solicitud
+        setErrorMessage(null); // Reseteamos el mensaje de error antes de la solicitud
+
         try {
             const res = await axios.post('http://localhost:3001/ask-video', { question, url });
-            setResponse(JSON.stringify(res.data.openAIResponse, null, 2)); // Muestra la respuesta de la API en el estado `response`
-        } catch (error) {
-            console.error('Error al llamar a la API:', error);
-            setResponse('Error al procesar la solicitud.'); // Muestra un mensaje de error en el estado `response`
+
+            // Si la solicitud es exitosa, mostramos la respuesta
+            setResponse(res.data.openAIResponse);
+        } catch (error: any) {
+            // Manejamos diferentes casos de error
+            if (error.response && error.response.status === 404) {
+                setErrorMessage('La URL proporcionada no coincide con ningún video de TikTok.');
+            } else {
+                setErrorMessage('Hubo un error al procesar tu solicitud. Inténtalo de nuevo más tarde.');
+            }
         } finally {
-            setIsLoading(false); // Oculta el spinner cuando finaliza la solicitud
+            setIsLoading(false); // Ocultamos el spinner cuando la solicitud termina
         }
     };
 
@@ -52,11 +62,14 @@ const ChatForm: React.FC = () => {
                         <button type="submit">Hacer pregunta al video</button>
                     </form>
                 </div>
+                {/* Manejamos el estado de respuesta */}
                 <div className="Response" role="textbox" aria-multiline="true">
                     <h2>Respuesta:</h2>
                     <div>
                         {isLoading ? (
                             <div className="spinner"></div> // Muestra el spinner mientras está cargando
+                        ) : errorMessage ? (
+                            <div className="error-message">{errorMessage}</div> // Muestra el mensaje de error
                         ) : (
                             response.replace(/\\n/g, '\n').split('\n').map((line, index) => (
                                 <React.Fragment key={index}>
@@ -67,6 +80,7 @@ const ChatForm: React.FC = () => {
                         )}
                     </div>
                 </div>
+
             </div>
         </div>
     );
